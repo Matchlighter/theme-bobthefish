@@ -42,6 +42,7 @@
 #     set -g fish_prompt_pwd_dir_length 0
 #     set -g theme_project_dir_length 1
 #     set -g theme_newline_cursor yes
+#     set -g theme_newline_prompt '$ '
 
 
 # ==============================
@@ -328,7 +329,7 @@ function __bobthefish_finish_segments -S -d 'Close open prompt segments'
     else if [ "$theme_powerline_fonts" = "no" ]
       set prompt '> '
     else
-      set prompt "$__bobthefish_right_arrow_glyph "
+      set prompt "$right_arrow_glyph "
     end
     echo -ens "$prompt"
   else if [ "$theme_newline_cursor" = 'clean' ]
