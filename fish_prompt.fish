@@ -534,6 +534,12 @@ function __bobthefish_prompt_k8s_context -S -d 'Show current Kubernetes context'
   end
 end
 
+function __bobthefish_prompt_vaulted -S -d 'Display current Vaulted Environment'
+  [ -z "$VAULTED_ENV" ]; and return
+  __bobthefish_start_segment $color_vagrant
+  echo -ns "$VAULTED_ENV" ' '
+  set_color normal
+end
 
 # ==============================
 # User / hostname info segments
@@ -896,6 +902,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
   __bobthefish_prompt_vagrant
   __bobthefish_prompt_docker
   __bobthefish_prompt_k8s_context
+  __bobthefish_prompt_vaulted
 
   # User / hostname info
   __bobthefish_prompt_user
