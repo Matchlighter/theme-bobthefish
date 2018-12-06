@@ -1,9 +1,34 @@
+# To define a custom color scheme, create a 'bobthefish_colors' function:
+# function bobthefish_colors -S -d 'Define a custom bobthefish color scheme'
+#   # optionally include a base color scheme...
+#   ___bobthefish_colors default
+
+#   # then override everything you want! note that these must be defined with `set -x`
+#   set -x color_initial_segment_exit  $__color_initial_segment_exit
+#   set -x color_initial_segment_su    $__color_initial_segment_su
+#   set -x color_initial_segment_jobs  $__color_initial_segment_jobs
+#   set -x color_path                  $__color_path
+#   set -x color_path_basename         $__color_path_basename
+#   set -x color_path_nowrite          $__color_path_nowrite
+#   set -x color_path_nowrite_basename $__color_path_nowrite_basename
+#   set -x color_repo                  $__color_repo
+#   set -x color_repo_work_tree        $__color_repo_work_tree
+#   set -x color_repo_dirty            $__color_repo_dirty
+#   set -x color_repo_staged           $__color_repo_staged
+#   set -x color_vi_mode_default       $__color_vi_mode_default
+#   set -x color_vi_mode_insert        $__color_vi_mode_insert
+#   set -x color_vi_mode_visual        $__color_vi_mode_visual
+#   set -x btf_prompt_vagrant_color               $__color_vagrant
+#   set -x btf_prompt_username_color              $__color_username
+#   set -x btf_prompt_hostname_color              $__color_hostname
+#   set -x btf_prompt_rvm_color                   $__color_rvm
+#   set -x btf_prompt_virtualfish_color           $__color_virtualfish
+#   set -x btf_prompt_virtualgo_color             $__color_virtualgo
+#   set -x btf_prompt_desk_color                  $__color_desk
+# end
+
 function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthefish'
   switch "$color_scheme"
-    case 'user'
-      __bobthefish_user_color_scheme_deprecated
-      return
-
     case 'terminal' 'terminal-dark*'
       set -l colorfg black
       [ "$color_scheme" = 'terminal-dark-white' ]; and set colorfg white
@@ -25,14 +50,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           brgreen $colorfg --bold
       set -x color_vi_mode_visual           bryellow $colorfg --bold
 
-      set -x color_vagrant                  brcyan $colorfg
-      set -x color_k8s                      magenta white --bold
-      set -x color_username                 white black --bold
-      set -x color_hostname                 white black
-      set -x color_rvm                      brmagenta $colorfg --bold
-      set -x color_virtualfish              brblue $colorfg --bold
-      set -x color_virtualgo                brblue $colorfg --bold
-      set -x color_desk                     brblue $colorfg --bold
+      set -x btf_prompt_vagrant_color                  brcyan $colorfg
+      set -x btf_prompt_k8s_color                      magenta white --bold
+      set -x btf_prompt_username_color                 white black --bold
+      set -x btf_prompt_hostname_color                 white black
+      set -x btf_prompt_rvm_color                      brmagenta $colorfg --bold
+      set -x btf_prompt_virtualfish_color              brblue $colorfg --bold
+      set -x btf_prompt_virtualgo_color                brblue $colorfg --bold
+      set -x btf_prompt_desk_color                     brblue $colorfg --bold
 
     case 'terminal-light*'
       set -l colorfg white
@@ -55,14 +80,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           brgreen $colorfg --bold
       set -x color_vi_mode_visual           bryellow $colorfg --bold
 
-      set -x color_vagrant                  brcyan $colorfg
-      set -x color_k8s                      magenta white --bold
-      set -x color_username                 black white --bold
-      set -x color_hostname                 black white
-      set -x color_rvm                      brmagenta $colorfg --bold
-      set -x color_virtualfish              brblue $colorfg --bold
-      set -x color_virtualgo                brblue $colorfg --bold
-      set -x color_desk                     brblue $colorfg --bold
+      set -x btf_prompt_vagrant_color                  brcyan $colorfg
+      set -x btf_prompt_k8s_color                      magenta white --bold
+      set -x btf_prompt_username_color                 black white --bold
+      set -x btf_prompt_hostname_color                 black white
+      set -x btf_prompt_rvm_color                      brmagenta $colorfg --bold
+      set -x btf_prompt_virtualfish_color              brblue $colorfg --bold
+      set -x btf_prompt_virtualgo_color                brblue $colorfg --bold
+      set -x btf_prompt_desk_color                     brblue $colorfg --bold
 
     case 'terminal2' 'terminal2-dark*'
       set -l colorfg black
@@ -85,14 +110,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           brgreen $colorfg --bold
       set -x color_vi_mode_visual           bryellow $colorfg --bold
 
-      set -x color_vagrant                  brcyan $colorfg
-      set -x color_k8s                      magenta white --bold
-      set -x color_username                 brgrey white --bold
-      set -x color_hostname                 brgrey white
-      set -x color_rvm                      brmagenta $colorfg --bold
-      set -x color_virtualfish              brblue $colorfg --bold
-      set -x color_virtualgo                brblue $colorfg --bold
-      set -x color_desk                     brblue $colorfg --bold
+      set -x btf_prompt_vagrant_color                  brcyan $colorfg
+      set -x btf_prompt_k8s_color                      magenta white --bold
+      set -x btf_prompt_username_color                 brgrey white --bold
+      set -x btf_prompt_hostname_color                 brgrey white
+      set -x btf_prompt_rvm_color                      brmagenta $colorfg --bold
+      set -x btf_prompt_virtualfish_color              brblue $colorfg --bold
+      set -x btf_prompt_virtualgo_color                brblue $colorfg --bold
+      set -x btf_prompt_desk_color                     brblue $colorfg --bold
 
     case 'terminal2-light*'
       set -l colorfg white
@@ -115,15 +140,16 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           brgreen $colorfg --bold
       set -x color_vi_mode_visual           bryellow $colorfg --bold
 
-      set -x color_vagrant                  brcyan $colorfg
-      set -x color_k8s                      magenta white --bold
-      set -x color_username                 grey black --bold
-      set -x color_hostname                 grey black
-      set -x color_rvm                      brmagenta $colorfg --bold
-      set -x color_virtualfish              brblue $colorfg --bold
-      set -x color_virtualgo                brblue $colorfg --bold
-      set -x color_desk                     brblue $colorfg --bold
+      set -x btf_prompt_vagrant_color                  brcyan $colorfg
+      set -x btf_prompt_k8s_color                      magenta white --bold
+      set -x btf_prompt_username_color                 grey black --bold
+      set -x btf_prompt_hostname_color                 grey black
+      set -x btf_prompt_rvm_color                      brmagenta $colorfg --bold
+      set -x btf_prompt_virtualfish_color              brblue $colorfg --bold
+      set -x btf_prompt_virtualgo_color                brblue $colorfg --bold
+      set -x btf_prompt_desk_color                     brblue $colorfg --bold
 
+# ------------------------------------------
     case 'zenburn'
       set -l grey   333333 # a bit darker than normal zenburn grey
       set -l red    CC9393
@@ -151,14 +177,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $green $white --bold
       set -x color_vi_mode_visual           $yellow $grey --bold
 
-      set -x color_vagrant                  $blue $green --bold
-      set -x color_k8s                      $green $white --bold
-      set -x color_username                 $grey $blue --bold
-      set -x color_hostname                 $grey $blue
-      set -x color_rvm                      $red $grey --bold
-      set -x color_virtualfish              $blue $grey --bold
-      set -x color_virtualgo                $blue $grey --bold
-      set -x color_desk                     $blue $grey --bold
+      set -x btf_prompt_vagrant_color                  $blue $green --bold
+      set -x btf_prompt_k8s_color                      $green $white --bold
+      set -x btf_prompt_username_color                 $grey $blue --bold
+      set -x btf_prompt_hostname_color                 $grey $blue
+      set -x btf_prompt_rvm_color                      $red $grey --bold
+      set -x btf_prompt_virtualfish_color              $blue $grey --bold
+      set -x btf_prompt_virtualgo_color                $blue $grey --bold
+      set -x btf_prompt_desk_color                     $blue $grey --bold
 
     case 'base16-light'
       set -l base00 181818
@@ -198,14 +224,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $base0B $colorfg --bold
       set -x color_vi_mode_visual           $base09 $colorfg --bold
 
-      set -x color_vagrant                  $base0C $colorfg --bold
-      set -x color_k8s                      $base06 $colorfg --bold
-      set -x color_username                 $base02 $base0D --bold
-      set -x color_hostname                 $base02 $base0D
-      set -x color_rvm                      $base08 $colorfg --bold
-      set -x color_virtualfish              $base0D $colorfg --bold
-      set -x color_virtualgo                $base0D $colorfg --bold
-      set -x color_desk                     $base0D $colorfg --bold
+      set -x btf_prompt_vagrant_color                  $base0C $colorfg --bold
+      set -x btf_prompt_k8s_color                      $base06 $colorfg --bold
+      set -x btf_prompt_username_color                 $base02 $base0D --bold
+      set -x btf_prompt_hostname_color                 $base02 $base0D
+      set -x btf_prompt_rvm_color                      $base08 $colorfg --bold
+      set -x btf_prompt_virtualfish_color              $base0D $colorfg --bold
+      set -x btf_prompt_virtualgo_color                $base0D $colorfg --bold
+      set -x btf_prompt_desk_color                     $base0D $colorfg --bold
 
     case 'base16' 'base16-dark'
       set -l base00 181818
@@ -245,14 +271,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $base0B $colorfg --bold
       set -x color_vi_mode_visual           $base09 $colorfg --bold
 
-      set -x color_vagrant                  $base0C $colorfg --bold
-      set -x color_k8s                      $base0B $colorfg --bold
-      set -x color_username                 $base02 $base0D --bold
-      set -x color_hostname                 $base02 $base0D
-      set -x color_rvm                      $base08 $colorfg --bold
-      set -x color_virtualfish              $base0D $colorfg --bold
-      set -x color_virtualgo                $base0D $colorfg --bold
-      set -x color_desk                     $base0D $colorfg --bold
+      set -x btf_prompt_vagrant_color                  $base0C $colorfg --bold
+      set -x btf_prompt_k8s_color                      $base0B $colorfg --bold
+      set -x btf_prompt_username_color                 $base02 $base0D --bold
+      set -x btf_prompt_hostname_color                 $base02 $base0D
+      set -x btf_prompt_rvm_color                      $base08 $colorfg --bold
+      set -x btf_prompt_virtualfish_color              $base0D $colorfg --bold
+      set -x btf_prompt_virtualgo_color                $base0D $colorfg --bold
+      set -x btf_prompt_desk_color                     $base0D $colorfg --bold
 
     case 'solarized-light'
       set -l base03  002b36
@@ -292,14 +318,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $green $colorfg --bold
       set -x color_vi_mode_visual           $yellow $colorfg --bold
 
-      set -x color_vagrant                  $violet $colorfg --bold
-      set -x color_k8s                      $green $colorfg --bold
-      set -x color_username                 $base2 $blue --bold
-      set -x color_hostname                 $base2 $blue
-      set -x color_rvm                      $red $colorfg --bold
-      set -x color_virtualfish              $cyan $colorfg --bold
-      set -x color_virtualgo                $cyan $colorfg --bold
-      set -x color_desk                     $cyan $colorfg --bold
+      set -x btf_prompt_vagrant_color                  $violet $colorfg --bold
+      set -x btf_prompt_k8s_color                      $green $colorfg --bold
+      set -x btf_prompt_username_color                 $base2 $blue --bold
+      set -x btf_prompt_hostname_color                 $base2 $blue
+      set -x btf_prompt_rvm_color                      $red $colorfg --bold
+      set -x btf_prompt_virtualfish_color              $cyan $colorfg --bold
+      set -x btf_prompt_virtualgo_color                $cyan $colorfg --bold
+      set -x btf_prompt_desk_color                     $cyan $colorfg --bold
 
     case 'solarized' 'solarized-dark'
       set -l base03  002b36
@@ -339,14 +365,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $green $colorfg --bold
       set -x color_vi_mode_visual           $yellow $colorfg --bold
 
-      set -x color_vagrant                  $violet $colorfg --bold
-      set -x color_k8s                      $green $colorfg --bold
-      set -x color_username                 $base02 $blue --bold
-      set -x color_hostname                 $base02 $blue
-      set -x color_rvm                      $red $colorfg --bold
-      set -x color_virtualfish              $cyan $colorfg --bold
-      set -x color_virtualgo                $cyan $colorfg --bold
-      set -x color_desk                     $cyan $colorfg --bold
+      set -x btf_prompt_vagrant_color                  $violet $colorfg --bold
+      set -x btf_prompt_k8s_color                      $green $colorfg --bold
+      set -x btf_prompt_username_color                 $base02 $blue --bold
+      set -x btf_prompt_hostname_color                 $base02 $blue
+      set -x btf_prompt_rvm_color                      $red $colorfg --bold
+      set -x btf_prompt_virtualfish_color              $cyan $colorfg --bold
+      set -x btf_prompt_virtualgo_color                $cyan $colorfg --bold
+      set -x btf_prompt_desk_color                     $cyan $colorfg --bold
 
     case 'light'
       #               light  medium dark
@@ -379,14 +405,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $green[2] $grey[3] --bold
       set -x color_vi_mode_visual           $orange[1] $orange[3] --bold
 
-      set -x color_vagrant                  $blue[1] $white --bold
-      set -x color_k8s                      $green[1] $colorfg --bold
-      set -x color_username                 $grey[1] $blue[3] --bold
-      set -x color_hostname                 $grey[1] $blue[3]
-      set -x color_rvm                      $ruby_red $grey[1] --bold
-      set -x color_virtualfish              $blue[2] $grey[1] --bold
-      set -x color_virtualgo                $blue[2] $grey[1] --bold
-      set -x color_desk                     $blue[2] $grey[1] --bold
+      set -x btf_prompt_vagrant_color                  $blue[1] $white --bold
+      set -x btf_prompt_k8s_color                      $green[1] $colorfg --bold
+      set -x btf_prompt_username_color                 $grey[1] $blue[3] --bold
+      set -x btf_prompt_hostname_color                 $grey[1] $blue[3]
+      set -x btf_prompt_rvm_color                      $ruby_red $grey[1] --bold
+      set -x btf_prompt_virtualfish_color              $blue[2] $grey[1] --bold
+      set -x btf_prompt_virtualgo_color                $blue[2] $grey[1] --bold
+      set -x btf_prompt_desk_color                     $blue[2] $grey[1] --bold
 
     case 'gruvbox'
       #               light  medium  dark  darkest
@@ -418,14 +444,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert        $blue[1] $bg[2] --bold
       set -x color_vi_mode_visual        $yellow[1] $bg[2] --bold
 
-      set -x color_vagrant               $blue[2] $fg[2] --bold
-      set -x color_k8s                   $green[2] $fg[2] --bold
-      set -x color_username              $fg[3] $blue[2] --bold
-      set -x color_hostname              $fg[3] $blue[2]
-      set -x color_rvm                   $red[2] $fg[2] --bold
-      set -x color_virtualfish           $blue[2] $fg[2] --bold
-      set -x color_virtualgo             $blue[2] $fg[2] --bold
-      set -x color_desk                  $blue[2] $fg[2] --bold
+      set -x btf_prompt_vagrant_color               $blue[2] $fg[2] --bold
+      set -x btf_prompt_k8s_color                   $green[2] $fg[2] --bold
+      set -x btf_prompt_username_color              $fg[3] $blue[2] --bold
+      set -x btf_prompt_hostname_color              $fg[3] $blue[2]
+      set -x btf_prompt_rvm_color                   $red[2] $fg[2] --bold
+      set -x btf_prompt_virtualfish_color           $blue[2] $fg[2] --bold
+      set -x btf_prompt_virtualgo_color             $blue[2] $fg[2] --bold
+      set -x btf_prompt_desk_color                  $blue[2] $fg[2] --bold
 
     case 'dracula' # https://draculatheme.com
       set -l bg           282a36
@@ -459,14 +485,14 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert        $green $bg --bold
       set -x color_vi_mode_visual        $orange $bg --bold
 
-      set -x color_vagrant               $pink $bg --bold
-      set -x color_k8s                   $green $fg --bold
-      set -x color_username              $selection $cyan --bold
-      set -x color_hostname              $selection $cyan
-      set -x color_rvm                   $red $bg --bold
-      set -x color_virtualfish           $comment $bg --bold
-      set -x color_virtualgo             $cyan $bg --bold
-      set -x color_desk                  $comment $bg --bold
+      set -x btf_prompt_vagrant_color               $pink $bg --bold
+      set -x btf_prompt_k8s_color                   $green $fg --bold
+      set -x btf_prompt_username_color              $selection $cyan --bold
+      set -x btf_prompt_hostname_color              $selection $cyan
+      set -x btf_prompt_rvm_color                   $red $bg --bold
+      set -x btf_prompt_virtualfish_color           $comment $bg --bold
+      set -x btf_prompt_virtualgo_color             $cyan $bg --bold
+      set -x btf_prompt_desk_color                  $comment $bg --bold
 
     case '*' # default dark theme
       #               light  medium dark
@@ -500,76 +526,17 @@ function __bobthefish_colors -S -a color_scheme -d 'Define colors used by bobthe
       set -x color_vi_mode_insert           $green[2] $grey[3] --bold
       set -x color_vi_mode_visual           $orange[1] $orange[3] --bold
 
-      set -x color_vagrant                  $blue[1] $white --bold
-      set -x color_k8s                      $green[2] $white --bold
-      set -x color_username                 $grey[1] $blue[3] --bold
-      set -x color_hostname                 $grey[1] $blue[3]
-      set -x color_rvm                      $ruby_red $grey[1] --bold
-      set -x color_virtualfish              $blue[2] $grey[1] --bold
-      set -x color_virtualgo                $go_blue $black --bold
-      set -x color_desk                     $blue[2] $grey[1] --bold
+      set -x btf_prompt_vagrant_color                  $blue[1] $white --bold
+      set -x btf_prompt_k8s_color                      $green[2] $white --bold
+      set -x btf_prompt_username_color                 $grey[1] $blue[3] --bold
+      set -x btf_prompt_hostname_color                 $grey[1] $blue[3]
+      set -x btf_prompt_rvm_color                      $ruby_red $grey[1] --bold
+      set -x btf_prompt_virtualfish_color              $blue[2] $grey[1] --bold
+      set -x btf_prompt_virtualgo_color                $go_blue $black --bold
+      set -x btf_prompt_desk_color                     $blue[2] $grey[1] --bold
   end
-end
 
-function __bobthefish_user_color_scheme_deprecated
-  set -q __color_initial_segment_exit;  or set -l __color_initial_segment_exit  ffffff ce000f --bold
-  set -q __color_initial_segment_su;    or set -l __color_initial_segment_su    ffffff 189303 --bold
-  set -q __color_initial_segment_jobs;  or set -l __color_initial_segment_jobs  ffffff 255e87 --bold
-  set -q __color_path;                  or set -l __color_path                  333333 999999
-  set -q __color_path_basename;         or set -l __color_path_basename         333333 ffffff --bold
-  set -q __color_path_nowrite;          or set -l __color_path_nowrite          660000 cc9999
-  set -q __color_path_nowrite_basename; or set -l __color_path_nowrite_basename 660000 cc9999 --bold
-  set -q __color_repo;                  or set -l __color_repo                  addc10 0c4801
-  set -q __color_repo_work_tree;        or set -l __color_repo_work_tree        333333 ffffff --bold
-  set -q __color_repo_dirty;            or set -l __color_repo_dirty            ce000f ffffff
-  set -q __color_repo_staged;           or set -l __color_repo_staged           f6b117 3a2a03
-  set -q __color_vi_mode_default;       or set -l __color_vi_mode_default       999999 333333 --bold
-  set -q __color_vi_mode_insert;        or set -l __color_vi_mode_insert        189303 333333 --bold
-  set -q __color_vi_mode_visual;        or set -l __color_vi_mode_visual        f6b117 3a2a03 --bold
-  set -q __color_vagrant;               or set -l __color_vagrant               48b4fb ffffff --bold
-  set -q __color_username;              or set -l __color_username              cccccc 255e87 --bold
-  set -q __color_hostname;              or set -l __color_hostname              cccccc 255e87
-  set -q __color_rvm;                   or set -l __color_rvm                   af0000 cccccc --bold
-  set -q __color_virtualfish;           or set -l __color_virtualfish           005faf cccccc --bold
-  set -q __color_virtualgo;             or set -l __color_virtualgo             005faf cccccc --bold
-  set -q __color_desk;                  or set -l __color_desk                  005faf cccccc --bold
-
-  set_color black -b red --bold
-  echo "The 'user' color scheme is deprecated."
-  set_color normal
-  set_color black -b red
-  echo "To define a custom color scheme, create a 'bobthefish_colors' function:"
-  set_color normal
-  echo
-
-  echo "function bobthefish_colors -S -d 'Define a custom bobthefish color scheme'
-
-  # optionally include a base color scheme...
-  ___bobthefish_colors default
-
-  # then override everything you want! note that these must be defined with `set -x`
-  set -x color_initial_segment_exit  $__color_initial_segment_exit
-  set -x color_initial_segment_su    $__color_initial_segment_su
-  set -x color_initial_segment_jobs  $__color_initial_segment_jobs
-  set -x color_path                  $__color_path
-  set -x color_path_basename         $__color_path_basename
-  set -x color_path_nowrite          $__color_path_nowrite
-  set -x color_path_nowrite_basename $__color_path_nowrite_basename
-  set -x color_repo                  $__color_repo
-  set -x color_repo_work_tree        $__color_repo_work_tree
-  set -x color_repo_dirty            $__color_repo_dirty
-  set -x color_repo_staged           $__color_repo_staged
-  set -x color_vi_mode_default       $__color_vi_mode_default
-  set -x color_vi_mode_insert        $__color_vi_mode_insert
-  set -x color_vi_mode_visual        $__color_vi_mode_visual
-  set -x color_vagrant               $__color_vagrant
-  set -x color_username              $__color_username
-  set -x color_hostname              $__color_hostname
-  set -x color_rvm                   $__color_rvm
-  set -x color_virtualfish           $__color_virtualfish
-  set -x color_virtualgo             $__color_virtualgo
-  set -x color_desk                  $__color_desk
-end"
-
-  echo
+  set_default -x btf_prompt_cmd_duration_color $btf_prompt_virtualgo_color
+  set_default -x btf_prompt_timestamp_color $btf_prompt_vagrant_color
+  set_default -x btf_prompt_vaulted_color $btf_prompt_vagrant_color
 end

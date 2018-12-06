@@ -3,8 +3,12 @@
 # Helper methods
 # ==============================
 
-function set_default -S -d 'Set the default value of a variable'
-  set -q $argv[1]; or set -l $argv
+function resolve_key -S -a template -a key
+  [ -n "$key" ]; or return
+  set -l current_key (string replace -a "%s" "$key" "$template")
+  for item in $$current_key
+    echo "$item"
+  end
 end
 
 function __bobthefish_basename -d 'basically basename, but faster'
@@ -17,7 +21,7 @@ end
 
 function __bobthefish_git_branch -S -d 'Get the current git branch (or commitish)'
   set -l ref (command git symbolic-ref HEAD 2>/dev/null); and begin
-    [ "$theme_display_git_master_branch" != 'yes' -a "$ref" = 'refs/heads/master' ]
+    [ "$btf_prompt_git_master_branch" != 'yes' -a "$ref" = 'refs/heads/master' ]
       and echo $branch_glyph
       and return
 
@@ -62,7 +66,7 @@ function __bobthefish_pretty_parent -S -a current_dir -d 'Print a parent directo
 end
 
 function __bobthefish_ignore_vcs_dir -d 'Check whether the current directory should be ignored as a VCS segment'
-  for p in $theme_vcs_ignore_paths
+  for p in $btf_prompt_vcs_ignore_paths
     set ignore_path (realpath $p 2>/dev/null)
     switch $PWD/
       case $ignore_path/\*
@@ -73,13 +77,11 @@ function __bobthefish_ignore_vcs_dir -d 'Check whether the current directory sho
 end
 
 function __bobthefish_git_project_dir -S -d 'Print the current git project base directory'
-  [ "$theme_display_git" = 'no' ]; and return
-
-  set -q theme_vcs_ignore_paths
+  set -q btf_prompt_vcs_ignore_paths
     and [ (__bobthefish_ignore_vcs_dir) ]
     and return
 
-  if [ "$theme_git_worktree_support" != 'yes' ]
+  if [ "$btf_prompt_git_worktree_support" != 'yes' ]
     command git rev-parse --show-toplevel 2>/dev/null
     return
   end
@@ -122,9 +124,7 @@ function __bobthefish_git_project_dir -S -d 'Print the current git project base 
 end
 
 function __bobthefish_hg_project_dir -S -d 'Print the current hg project base directory'
-  [ "$theme_display_hg" = 'yes' ]; or return
-
-  set -q theme_vcs_ignore_paths
+  set -q btf_prompt_vcs_ignore_paths
     and [ (__bobthefish_ignore_vcs_dir) ]
     and return
 
@@ -140,21 +140,21 @@ function __bobthefish_hg_project_dir -S -d 'Print the current hg project base di
 end
 
 function __bobthefish_project_pwd -S -a current_dir -d 'Print the working directory relative to project root'
-  set -q theme_project_dir_length
-    or set -l theme_project_dir_length 0
+  set -q btf_prompt_vcs_project_dir_length
+    or set -l btf_prompt_vcs_project_dir_length 0
 
   set -l project_dir (string replace -r '^'"$current_dir"'($|/)' '' $PWD)
 
-  if [ $theme_project_dir_length -eq 0 ]
+  if [ $btf_prompt_vcs_project_dir_length -eq 0 ]
     echo -n $project_dir
     return
   end
 
-  string replace -ar '(\.?[^/]{'"$theme_project_dir_length"'})[^/]*/' '$1/' $project_dir
+  string replace -ar '(\.?[^/]{'"$btf_prompt_vcs_project_dir_length"'})[^/]*/' '$1/' $project_dir
 end
 
 function __bobthefish_git_ahead -S -d 'Print the ahead/behind state for the current branch'
-  if [ "$theme_display_git_ahead_verbose" = 'yes' ]
+  if [ "$btf_prompt_git_ahead_verbose" = 'yes' ]
     __bobthefish_git_ahead_verbose
     return
   end
@@ -223,6 +223,9 @@ function __bobthefish_start_segment -S -d 'Start a prompt segment'
   set -l fg $argv[1]
   set -e argv[1]
 
+  set_default bg black
+  set_default fg white
+
   set_color normal # clear out anything bold or underline...
 
   if [ "$prompt_side" = 'left' ]
@@ -243,7 +246,7 @@ function __bobthefish_start_segment -S -d 'Start a prompt segment'
     end
 
   else if [ "$prompt_side" = 'right' ]
-    if [ "$theme_right_colorized" = 'yes' ]
+    if [ "$btf_right_colorized" = 'yes' ]
       switch "$__bobthefish_current_bg"
         case ''
           # If there's no background, just start one
@@ -283,11 +286,21 @@ function __bobthefish_finish_segments -S -d 'Close open prompt segments'
 end
 
 function __bobthefish_start_segment_key -S -a key -d 'Start a prompt segment for a given key name'
-  
+  set -l prompt_color (resolve_key 'btf_prompt_%s_color' "$key")
+  set -q prompt_color; or set -l prompt_color $prompt_default_color
+  __bobthefish_start_segment $prompt_color
 end
 
-function prompt_segment -S -a key -a content
+function __bobthefish_segment_icon -S -a key
+  [ -n "$key" ]; and set -l $key "$__bobthefish_segment"
+  set -l icon (resolve_key "btf_prompt_%s_icon" "$key")
+  [ -z "$icon" ]; and echo -ens $icon
+end
+
+function __bobthefish_prompt_segment -S -a key -a content
+  [ -n "$key" ]; and set -l $key "$__bobthefish_segment"
   __bobthefish_start_segment_key $key
+  __bobthefish_segment_icon $key
   echo -ens $content
 end
 
@@ -324,7 +337,7 @@ function __bobthefish_prompt_status -S -d 'Display flags for a non-zero exit sta
     if [ "$nonzero" ]
       set_color normal
       set_color -b $color_initial_segment_exit
-      if [ "$theme_show_exit_status" = 'yes' ]
+      if [ "$btf_prompt_status_show_exit_status" = 'yes' ]
         echo -ns $last_status ' '
       else
         echo -n $nonzero_exit_glyph
@@ -351,11 +364,9 @@ function __bobthefish_prompt_status -S -d 'Display flags for a non-zero exit sta
 end
 
 function __bobthefish_prompt_vi -S -d 'Display vi mode'
-  [ "$theme_display_vi" != 'no' ]; or return
   [ "$fish_key_bindings" = 'fish_vi_key_bindings' \
     -o "$fish_key_bindings" = 'hybrid_bindings' \
-    -o "$fish_key_bindings" = 'fish_hybrid_key_bindings' \
-    -o "$theme_display_vi" = 'yes' ]; or return
+    -o "$fish_key_bindings" = 'fish_hybrid_key_bindings' ]; or return
   switch $fish_bind_mode
     case default
       __bobthefish_start_segment $color_vi_mode_default
@@ -373,10 +384,9 @@ function __bobthefish_prompt_vi -S -d 'Display vi mode'
 end
 
 function __bobthefish_prompt_cmd_duration -S -d 'Show command duration'
-  [ "$theme_display_cmd_duration" = "no" ]; and return
   [ -z "$CMD_DURATION" -o "$CMD_DURATION" -lt 100 ]; and return
 
-  __bobthefish_start_segment $color_virtualgo
+  __bobthefish_prompt_segment 'cmd_duration'
 
   if [ "$CMD_DURATION" -lt 5000 ]
     echo -ns $CMD_DURATION 'ms'
@@ -416,23 +426,17 @@ function __bobthefish_pretty_ms -S -a ms interval -d 'Millisecond formatting for
 end
 
 function __bobthefish_prompt_timestamp -S -d 'Show the current timestamp'
-  [ "$theme_display_date" = "no" ]; and return
-
-  __bobthefish_start_segment $color_vagrant
-
-  set -q theme_date_format or set -l theme_date_format "+%c"
-
-  date $theme_date_format
+  set -q btf_date_format; or set -l btf_date_format "+%c"
+  __bobthefish_prompt_segment 'timestamp' (date $btf_date_format)
   echo -n ' '
 end
-
 
 # ==============================
 # Container and VM segments
 # ==============================
 
 function __bobthefish_prompt_vagrant -S -d 'Display Vagrant status'
-  [ "$theme_display_vagrant" = 'yes' -a -f Vagrantfile ]; or return
+  [ -f Vagrantfile ]; or return
 
   # .vagrant/machines/$machine/$provider/id
   for file in .vagrant/machines/*/*/id
@@ -470,7 +474,7 @@ function __bobthefish_prompt_vagrant_vbox -S -a id -d 'Display VirtualBox Vagran
   end
   [ -z "$vagrant_status" ]; and return
 
-  __bobthefish_start_segment $color_vagrant
+  __bobthefish_prompt_segment 'vagrant'
   echo -ns $vagrant_status ' '
 end
 
@@ -483,7 +487,7 @@ function __bobthefish_prompt_vagrant_vmware -S -a id -d 'Display VMWare Vagrant 
   end
   [ -z "$vagrant_status" ]; and return
 
-  __bobthefish_start_segment $color_vagrant
+  __bobthefish_prompt_segment 'vagrant'
   echo -ns $vagrant_status ' '
 end
 
@@ -506,19 +510,17 @@ function __bobthefish_prompt_vagrant_parallels -S -d 'Display Parallels Vagrant 
   end
   [ -z "$vagrant_status" ]; and return
 
-  __bobthefish_start_segment $color_vagrant
+  __bobthefish_prompt_segment 'vagrant'
   echo -ns $vagrant_status ' '
 end
 
 function __bobthefish_prompt_docker -S -d 'Display Docker machine name'
-  [ "$theme_display_docker_machine" = 'no' -o -z "$DOCKER_MACHINE_NAME" ]; and return
-  __bobthefish_start_segment $color_vagrant
+  [ -z "$DOCKER_MACHINE_NAME" ]; and return
+  __bobthefish_prompt_segment 'vagrant'
   echo -ns $DOCKER_MACHINE_NAME ' '
 end
 
 function __bobthefish_prompt_k8s_context -S -d 'Show current Kubernetes context'
-  [ "$theme_display_k8s_context" = 'yes' ]; or return
-
   set -l config_paths "$HOME/.kube/config"
   [ -n "$KUBECONFIG" ]
     and set config_paths (string split ':' "$KUBECONFIG") $config_paths
@@ -531,7 +533,7 @@ function __bobthefish_prompt_k8s_context -S -d 'Show current Kubernetes context'
         set -l context (string trim -c '"\' ' -- $val)
         [ -z "$context" ]; and return
 
-        __bobthefish_start_segment $color_k8s
+        __bobthefish_prompt_segment 'k8s'
         echo -ns $context ' '
         return
       end
@@ -541,9 +543,7 @@ end
 
 function __bobthefish_prompt_vaulted -S -d 'Display current Vaulted Environment'
   [ -z "$VAULTED_ENV" ]; and return
-  __bobthefish_start_segment $color_vagrant
-  echo -ns "$VAULTED_ENV" ' '
-  set_color normal
+  __bobthefish_prompt_segment 'vaulted' (echo -ns "$VAULTED_ENV" ' ')
 end
 
 
@@ -562,14 +562,14 @@ if not type -q prompt_hostname
   end
 end
 
-function __bobthefish_prompt_user -S -d 'Display current user and hostname'
-  [ "$theme_display_user" = 'yes' -o \( "$theme_display_user" != 'no' -a -n "$SSH_CLIENT" \) -o \( -n "$default_user" -a "$USER" != "$default_user" \) ]
+function __bobthefish_prompt_context -S -d 'Display current user and hostname'
+  [ -n "$SSH_CLIENT" -o \( -n "$default_user" -a "$USER" != "$default_user" \) ]
     and set -l display_user
-  [ "$theme_display_hostname" = 'yes' -o \( "$theme_display_hostname" != 'no' -a -n "$SSH_CLIENT" \) ]
+  [ -n "$SSH_CLIENT" ]
     and set -l display_hostname
 
   if set -q display_user
-    __bobthefish_start_segment $color_username
+    __bobthefish_prompt_segment 'username'
     echo -ns (whoami)
   end
 
@@ -578,10 +578,10 @@ function __bobthefish_prompt_user -S -d 'Display current user and hostname'
       # reset colors without starting a new segment...
       # (so we can have a bold username and non-bold hostname)
       set_color normal
-      set_color -b $color_hostname[1] $color_hostname[2..-1]
+      set_color -b $btf_prompt_hostname_color[1] $btf_prompt_hostname_color[2..-1]
       echo -ns '@' (prompt_hostname)
     else
-      __bobthefish_start_segment $color_hostname
+      __bobthefish_prompt_segment 'hostname'
       echo -ns (prompt_hostname)
     end
   end
@@ -651,8 +651,6 @@ function __bobthefish_rvm_info -S -d 'Current Ruby information from RVM'
 end
 
 function __bobthefish_prompt_rubies -S -d 'Display current Ruby information'
-  [ "$theme_display_ruby" = 'no' ]; and return
-
   set -l ruby_version
   if type -fq rvm-prompt
     set ruby_version (__bobthefish_rvm_info)
@@ -681,7 +679,7 @@ function __bobthefish_prompt_rubies -S -d 'Display current Ruby information'
     set ruby_version $asdf_ruby_version
   end
   [ -z "$ruby_version" ]; and return
-  __bobthefish_start_segment $color_rvm
+  __bobthefish_prompt_segment 'rvm'
   echo -ns $ruby_glyph $ruby_version ' '
 end
 
@@ -699,10 +697,10 @@ function __bobthefish_virtualenv_python_version -S -d 'Get current Python versio
 end
 
 function __bobthefish_prompt_virtualfish -S -d "Display current Python virtual environment (only for virtualfish, virtualenv's activate.fish changes prompt by itself) or conda environment."
-  [ "$theme_display_virtualenv" = 'no' -o -z "$VIRTUAL_ENV" -a -z "$CONDA_DEFAULT_ENV" ]; and return
+  [ -z "$VIRTUAL_ENV" -a -z "$CONDA_DEFAULT_ENV" ]; and return
   set -l version_glyph (__bobthefish_virtualenv_python_version)
   if [ "$version_glyph" ]
-    __bobthefish_start_segment $color_virtualfish
+    __bobthefish_prompt_segment 'virtualfish'
     echo -ns $virtualenv_glyph $version_glyph ' '
   end
   if [ "$VIRTUAL_ENV" ]
@@ -713,17 +711,15 @@ function __bobthefish_prompt_virtualfish -S -d "Display current Python virtual e
 end
 
 function __bobthefish_prompt_virtualgo -S -d 'Display current Go virtual environment'
-  [ "$theme_display_virtualgo" = 'no' -o -z "$VIRTUALGO" ]; and return
-  __bobthefish_start_segment $color_virtualgo
+  [ -z "$VIRTUALGO" ]; and return
+  __bobthefish_prompt_segment 'virtualgo'
   echo -ns $go_glyph ' ' (basename "$VIRTUALGO") ' '
-  set_color normal
 end
 
 function __bobthefish_prompt_desk -S -d 'Display current desk environment'
-  [ "$theme_display_desk" = 'no' -o -z "$DESK_ENV" ]; and return
-  __bobthefish_start_segment $color_desk
+  [ -z "$DESK_ENV" ]; and return
+  __bobthefish_prompt_segment 'desk'
   echo -ns $desk_glyph ' ' (basename  -a -s ".fish" "$DESK_ENV") ' '
-  set_color normal
 end
 
 
@@ -795,11 +791,11 @@ end
 
 function __bobthefish_prompt_git -S -a current_dir -d 'Display the actual git state'
   set -l dirty ''
-  if [ "$theme_display_git_dirty" != 'no' ]
+  if [ "$btf_prompt_git_dirty" != 'no' ]
     set -l show_dirty (command git config --bool bash.showDirtyState 2>/dev/null)
     if [ "$show_dirty" != 'false' ]
       set dirty (command git diff --no-ext-diff --quiet --exit-code 2>/dev/null; or echo -n "$git_dirty_glyph")
-      if [ "$dirty" -a "$theme_display_git_dirty_verbose" = 'yes' ]
+      if [ "$dirty" -a "$btf_prompt_git_dirty_verbose" = 'yes' ]
         set dirty "$dirty"(__bobthefish_git_dirty_verbose)
       end
     end
@@ -810,7 +806,7 @@ function __bobthefish_prompt_git -S -a current_dir -d 'Display the actual git st
   set -l ahead   (__bobthefish_git_ahead)
 
   set -l new ''
-  if [ "$theme_display_git_untracked" != 'no' ]
+  if [ "$btf_prompt_git_untracked" != 'no' ]
     set -l show_untracked (command git config --bool bash.showUntrackedFiles 2>/dev/null)
     if [ "$show_untracked" != 'false' ]
       set new (command git ls-files --other --exclude-standard --directory --no-empty-directory 2>/dev/null)
@@ -837,7 +833,7 @@ function __bobthefish_prompt_git -S -a current_dir -d 'Display the actual git st
   echo -ns (__bobthefish_git_branch) $flags ' '
   set_color normal
 
-  if [ "$theme_git_worktree_support" != 'yes' ]
+  if [ "$btf_prompt_git_worktree_support" != 'yes' ]
     set -l project_pwd (__bobthefish_project_pwd $current_dir)
     if [ "$project_pwd" ]
       if [ -w "$PWD" ]
@@ -938,10 +934,11 @@ end
 # ==============================
 
 function __bobthefish_prompt_newline -S
-  if [$prompt_side = 'right']
-    # Ignore newlines on the right side
-  else
-    echo -ens "\n"
+  # Ignore newlines on the right side
+  if [ $prompt_side = 'left' ]
+    __bobthefish_finish_segments
+    echo -ens "\n" $btf_prompt_newline_prefix
+    set -g __bobthefish_newlines (math -- $__bobthefish_newlines + 1)
   end
 end
 
@@ -961,16 +958,18 @@ end
 
 function __bobthefish_prompt -S -d 'Render sections of a prompt'
   __bobthefish_glyphs
-  __bobthefish_colors $theme_color_scheme
+  __bobthefish_colors $btf_color_scheme
   type -q bobthefish_colors
     and bobthefish_colors
 
   # Start each line with a blank slate
+  set -g __bobthefish_newlines 0
   set -l __bobthefish_current_bg
 
   for element in $argv
-    if [ $element[0..7] = "custom_" ]
-      __bobthefish_prompt_custom $element[8..-1]
+    set -l __bobthefish_segment "$element"
+    if [ (string sub -l 7 $element) = "custom_" ]
+      __bobthefish_prompt_custom (string sub -s 8 $element)
     else
       eval "__bobthefish_prompt_$element"
     end

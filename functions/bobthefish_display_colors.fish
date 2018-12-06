@@ -23,7 +23,7 @@ function bobthefish_display_colors -a color_scheme -d 'Print example prompt colo
       __bobthefish_colors $color_scheme
 
     case ''
-      __bobthefish_colors $theme_color_scheme
+      __bobthefish_colors $btf_color_scheme
       type -q bobthefish_colors
         and bobthefish_colors
 
@@ -100,32 +100,32 @@ function bobthefish_display_colors -a color_scheme -d 'Print example prompt colo
   __bobthefish_finish_segments
   echo
 
-  __bobthefish_start_segment $color_vagrant
+  __bobthefish_start_segment $btf_prompt_vagrant_color
   echo -ns $vagrant_running_glyph ' ' vagrant ' '
   __bobthefish_finish_segments
   echo
 
-  __bobthefish_start_segment $color_username
+  __bobthefish_start_segment $btf_prompt_username_color
   echo -n username
   set_color normal
-  set_color -b $color_hostname[1] $color_hostname[2..-1]
+  set_color -b $btf_prompt_hostname_color[1] $btf_prompt_hostname_color[2..-1]
   echo -ns @hostname ' '
   __bobthefish_finish_segments
   echo
 
-  __bobthefish_start_segment $color_rvm
+  __bobthefish_start_segment $btf_prompt_rvm_color
   echo -ns $ruby_glyph rvm ' '
   __bobthefish_finish_segments
 
-  __bobthefish_start_segment $color_virtualfish
+  __bobthefish_start_segment $btf_prompt_virtualfish_color
   echo -ns $virtualenv_glyph virtualfish ' '
   __bobthefish_finish_segments
 
-  __bobthefish_start_segment $color_virtualgo
+  __bobthefish_start_segment $btf_prompt_virtualgo_color
   echo -ns $go_glyph virtualgo ' '
   __bobthefish_finish_segments
 
-  __bobthefish_start_segment $color_desk
+  __bobthefish_start_segment $btf_prompt_desk_color
   echo -ns $desk_glyph desk ' '
   __bobthefish_finish_segments
 

@@ -45,7 +45,7 @@ function __bobthefish_glyphs -S -d 'Define glyphs used by bobthefish'
   set -x git_plus_minus_glyph '±'
 
   # Disable Powerline fonts
-  if [ "$theme_powerline_fonts" = "no" ]
+  if [ "$btf_powerline_fonts" = "no" ]
     set branch_glyph            \u2387
     set right_black_arrow_glyph ''
     set right_arrow_glyph       ''
@@ -54,7 +54,7 @@ function __bobthefish_glyphs -S -d 'Define glyphs used by bobthefish'
   end
 
   # Use prettier Nerd Fonts glyphs
-  if [ "$theme_nerd_fonts" = "yes" ]
+  if [ "$btf_nerd_fonts" = "yes" ]
     set branch_glyph     \uF418
     set detached_glyph   \uF417
     set tag_glyph        \uF412
@@ -83,7 +83,7 @@ function __bobthefish_glyphs -S -d 'Define glyphs used by bobthefish'
   end
 
   # Avoid ambiguous glyphs
-  if [ "$theme_avoid_ambiguous_glyphs" = "yes" ]
+  if [ "$btf_avoid_ambiguous_glyphs" = "yes" ]
     set git_untracked_glyph '...'
   end
 end
