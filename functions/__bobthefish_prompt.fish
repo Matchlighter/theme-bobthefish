@@ -1,3 +1,23 @@
+# You can override some default prompt options in your config.fish:
+#
+#     set -g btf_prompt_git_dirty no
+#     set -g btf_prompt_git_untracked no
+#     set -g btf_prompt_git_ahead_verbose yes
+#     set -g btf_prompt_git_dirty_verbose yes
+#     set -g btf_prompt_git_master_branch yes
+#     set -g btf_prompt_git_worktree_support yes
+#     # set -g btf_prompt_context_user ssh
+#     # set -g btf_prompt_context_hostname ssh
+#     set -g btf_avoid_ambiguous_glyphs yes
+#     set -g btf_powerline_fonts no
+#     set -g btf_nerd_fonts yes
+#     set -g btf_prompt_status_show_exit_status yes
+#     set -g default_user your_normal_user
+#     set -g btf_color_scheme dark
+#     set -g fish_prompt_pwd_dir_length 0
+#     set -g btf_prompt_vcs_project_dir_length 1
+#     set -g btf_newline_prompt '$ '
+#     set -g btf_date_format "+%a %H:%M"
 
 # ==============================
 # Helper methods
