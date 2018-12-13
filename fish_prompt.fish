@@ -11,7 +11,7 @@
 #     https://github.com/Lokaltog/powerline-fonts
 #
 # For more advanced awesome, install a nerd fonts patched font (and be sure to
-# enable nerd fonts support with `set -g theme_nerd_fonts yes`):
+# enable nerd fonts support with `set -g btf_nerd_fonts yes`):
 #
 #     https://github.com/ryanoasis/nerd-fonts
 

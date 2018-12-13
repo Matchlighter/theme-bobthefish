@@ -15,11 +15,11 @@ Be sure to have Oh My Fish installed. Then just:
 
 You will need a [Powerline-patched font][patching] for this to work, unless you enable the compatibility fallback option:
 
-    set -g theme_powerline_fonts no
+    set -g btf_powerline_fonts no
 
 [I recommend picking one of these][fonts]. For more advanced awesome, install a [nerd fonts patched font][nerd-fonts], and enable nerd fonts support:
 
-    set -g theme_nerd_fonts yes
+    set -g btf_nerd_fonts yes
 
 This theme is based loosely on [agnoster][agnoster].
 
@@ -67,61 +67,50 @@ This theme is based loosely on [agnoster][agnoster].
 You can override some of the following default options in your `config.fish`:
 
 ```fish
-set -g theme_display_git no
-set -g theme_display_git_dirty no
-set -g theme_display_git_untracked no
-set -g theme_display_git_ahead_verbose yes
-set -g theme_display_git_dirty_verbose yes
-set -g theme_display_git_master_branch yes
-set -g theme_git_worktree_support yes
-set -g theme_display_vagrant yes
-set -g theme_display_docker_machine no
-set -g theme_display_k8s_context yes
-set -g theme_display_hg yes
-set -g theme_display_virtualenv no
-set -g theme_display_ruby no
-set -g theme_display_user ssh
-set -g theme_display_hostname ssh
-set -g theme_display_vi no
-set -g theme_display_date no
-set -g theme_display_cmd_duration yes
-set -g theme_title_display_process yes
-set -g theme_title_display_path no
-set -g theme_title_display_user yes
-set -g theme_title_use_abbreviated_path no
-set -g theme_date_format "+%a %H:%M"
-set -g theme_avoid_ambiguous_glyphs yes
-set -g theme_powerline_fonts no
-set -g theme_nerd_fonts yes
-set -g theme_show_exit_status yes
+set -g btf_prompt_git_dirty no
+set -g btf_prompt_git_untracked no
+set -g btf_prompt_git_ahead_verbose yes
+set -g btf_prompt_git_dirty_verbose yes
+set -g btf_prompt_git_master_branch yes
+set -g btf_prompt_git_worktree_support yes
+set -g btf_title_display_process yes
+set -g btf_title_display_path no
+set -g btf_title_display_user yes
+set -g btf_title_use_abbreviated_path no
+set -g btf_date_format "+%a %H:%M"
+set -g btf_avoid_ambiguous_glyphs yes
+set -g btf_powerline_fonts no
+set -g btf_nerd_fonts yes
+set -g btf_prompt_status_show_exit_status yes
 set -g default_user your_normal_user
-set -g theme_color_scheme dark
+set -g btf_color_scheme dark
 set -g fish_prompt_pwd_dir_length 0
-set -g theme_project_dir_length 1
+set -g btf_prompt_vcs_project_dir_length 1
 set -g btf_newline_prompt '$ '
 ```
 
 **Title options**
 
-- `theme_title_display_process`. By default theme doesn't show current process name in terminal title. If you want to show it, just set to `yes`.
-- `theme_title_display_path`. Use `no` to hide current working directory from title.
-- `theme_title_display_user`. Set to `yes` to show the current user in the tab title (unless you're the default user).
-- `theme_title_use_abbreviated_path`. Default is `yes`. This means your home directory will be displayed as `~` and `/usr/local` as `/u/local`. Set it to `no` if you prefer full paths in title.
+- `btf_title_display_process`. By default theme doesn't show current process name in terminal title. If you want to show it, just set to `yes`.
+- `btf_title_display_path`. Use `no` to hide current working directory from title.
+- `btf_title_display_user`. Set to `yes` to show the current user in the tab title (unless you're the default user).
+- `btf_title_use_abbreviated_path`. Default is `yes`. This means your home directory will be displayed as `~` and `/usr/local` as `/u/local`. Set it to `no` if you prefer full paths in title.
 
 **Prompt options**
 
+- `btf_prompt_status_show_exit_status`. Set this option to `yes` to have the prompt show the last exit code if it was non_zero instead of just the exclamation mark.
+- `btf_prompt_git_worktree_support`. If you do any git worktree shenanigans, setting this to `yes` will fix incorrect project-relative path display. If you don't do any git worktree shenanigans, leave it disabled. It's faster this way :)
+- `fish_prompt_pwd_dir_length`. bobthefish respects the Fish `$fish_prompt_pwd_dir_length` setting to abbreviate the prompt path. Set to `0` to show the full path, `1` (default) to show only the first character of each parent directory name, or any other number to show up to that many characters.
+- `btf_prompt_vcs_project_dir_length`. The same as `$fish_prompt_pwd_dir_length`, but for the path relative to the current project root. Defaults to `0`; set to any other number to show an abbreviated path.
+- `btf_newline_prompt`. Use a custom prompt with newline cursor. By default this is the chevron right glyph or `>` when powerline fonts are disabled.
+- 
 - `theme_display_ruby`. Use `no` to completely hide all information about Ruby version. By default Ruby version displayed if there is the difference from default settings.
 - `theme_display_vagrant`. This feature is disabled by default, use `yes` to display Vagrant status in your prompt. Please note that only the VirtualBox and VMWare providers are supported.
 - `theme_display_vi`. By default the vi mode indicator will be shown if vi or hybrid key bindings are enabled. Use `no` to hide the indicator, or `yes` to show the indicator.
 - `theme_display_k8s_context`. This feature is disabled by default. Use `yes` to show the current kubernetes context (`> kubectl config current-context`).
 - `theme_display_user`. If set to `yes`, display username always, if set to `ssh`, only when an SSH-Session is detected, if set to no, never.
 - `theme_display_hostname`. Same behaviour as `theme_display`.
-- `theme_show_exit_status`. Set this option to `yes` to have the prompt show the last exit code if it was non_zero instead of just the exclamation mark.
-- `theme_git_worktree_support`. If you do any git worktree shenanigans, setting this to `yes` will fix incorrect project-relative path display. If you don't do any git worktree shenanigans, leave it disabled. It's faster this way :)
-- `fish_prompt_pwd_dir_length`. bobthefish respects the Fish `$fish_prompt_pwd_dir_length` setting to abbreviate the prompt path. Set to `0` to show the full path, `1` (default) to show only the first character of each parent directory name, or any other number to show up to that many characters.
-- `theme_project_dir_length`. The same as `$fish_prompt_pwd_dir_length`, but for the path relative to the current project root. Defaults to `0`; set to any other number to show an abbreviated path.
 - `theme_newline_cursor`. Use `yes` to have cursor start on a new line. By default the prompt is only one line. When working with long directories it may be preferrend to have cursor on the next line. Setting this to `clean` instead of `yes` suppresses the caret on the new line.
-- `btf_newline_prompt`. Use a custom prompt with newline cursor. By default this is the chevron right glyph or `>` when powerline fonts are disabled.
 
 **Color scheme options**
 
@@ -134,7 +123,7 @@ set -g btf_newline_prompt '$ '
 You can use the function `bobthefish_display_colors` to preview the prompts in
 any color scheme.
 
-Set `theme_color_scheme` in a terminal session or in your fish startup files to
+Set `btf_color_scheme` in a terminal session or in your fish startup files to
 one of the following options to change the prompt colors.
 
 - `dark`. The default bobthefish theme.
@@ -175,13 +164,13 @@ and bright white.
 - `terminal2-light-black`
 
 Finally, you can specify your very own color scheme by setting
-`theme_color_scheme` to `user`. In that case, you also need to define some
+`btf_color_scheme` to `user`. In that case, you also need to define some
 variables to set the colors of the prompt. See the "Colors" section of
 `fish_prompt.fish` for details.
 
 
 **VCS options**
-- `set -g theme_vcs_ignore_paths /some/path /some/other/path{foo,bar}`. Ignore project paths for Git or Mercurial. Supports glob patterns.
+- `set -g btf_prompt_vcs_ignore_paths /some/path /some/other/path{foo,bar}`. Ignore project paths for Git or Mercurial. Supports glob patterns.
 
 ### Overrides
 
