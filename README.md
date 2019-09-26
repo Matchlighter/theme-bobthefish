@@ -67,12 +67,7 @@ This theme is based loosely on [agnoster][agnoster].
 You can override some of the following default options in your `config.fish`:
 
 ```fish
-set -g btf_prompt_git_dirty no
-set -g btf_prompt_git_untracked no
-set -g btf_prompt_git_ahead_verbose yes
-set -g btf_prompt_git_dirty_verbose yes
-set -g btf_prompt_git_master_branch yes
-set -g btf_prompt_git_worktree_support yes
+
 set -g btf_title_display_process yes
 set -g btf_title_display_path no
 set -g btf_title_display_user yes
@@ -91,26 +86,19 @@ set -g btf_newline_prompt '$ '
 
 **Title options**
 
-- `btf_title_display_process`. By default theme doesn't show current process name in terminal title. If you want to show it, just set to `yes`.
-- `btf_title_display_path`. Use `no` to hide current working directory from title.
-- `btf_title_display_user`. Set to `yes` to show the current user in the tab title (unless you're the default user).
-- `btf_title_use_abbreviated_path`. Default is `yes`. This means your home directory will be displayed as `~` and `/usr/local` as `/u/local`. Set it to `no` if you prefer full paths in title.
+- `btf_title_display_process` - By default theme doesn't show current process name in terminal title. If you want to show it, just set to `yes`.
+- `btf_title_display_path` - Use `no` to hide current working directory from title.
+- `btf_title_display_user` - Set to `yes` to show the current user in the tab title (unless you're the default user).
+- `btf_title_use_abbreviated_path` - Default is `yes`. This means your home directory will be displayed as `~` and `/usr/local` as `/u/local`. Set it to `no` if you prefer full paths in title.
 
 **Prompt options**
 
-- `btf_prompt_status_show_exit_status`. Set this option to `yes` to have the prompt show the last exit code if it was non_zero instead of just the exclamation mark.
-- `btf_prompt_git_worktree_support`. If you do any git worktree shenanigans, setting this to `yes` will fix incorrect project-relative path display. If you don't do any git worktree shenanigans, leave it disabled. It's faster this way :)
-- `fish_prompt_pwd_dir_length`. bobthefish respects the Fish `$fish_prompt_pwd_dir_length` setting to abbreviate the prompt path. Set to `0` to show the full path, `1` (default) to show only the first character of each parent directory name, or any other number to show up to that many characters.
-- `btf_prompt_vcs_project_dir_length`. The same as `$fish_prompt_pwd_dir_length`, but for the path relative to the current project root. Defaults to `0`; set to any other number to show an abbreviated path.
-- `btf_newline_prompt`. Use a custom prompt with newline cursor. By default this is the chevron right glyph or `>` when powerline fonts are disabled.
-- 
-- `theme_display_ruby`. Use `no` to completely hide all information about Ruby version. By default Ruby version displayed if there is the difference from default settings.
-- `theme_display_vagrant`. This feature is disabled by default, use `yes` to display Vagrant status in your prompt. Please note that only the VirtualBox and VMWare providers are supported.
-- `theme_display_vi`. By default the vi mode indicator will be shown if vi or hybrid key bindings are enabled. Use `no` to hide the indicator, or `yes` to show the indicator.
-- `theme_display_k8s_context`. This feature is disabled by default. Use `yes` to show the current kubernetes context (`> kubectl config current-context`).
-- `theme_display_user`. If set to `yes`, display username always, if set to `ssh`, only when an SSH-Session is detected, if set to no, never.
-- `theme_display_hostname`. Same behaviour as `theme_display`.
-- `theme_newline_cursor`. Use `yes` to have cursor start on a new line. By default the prompt is only one line. When working with long directories it may be preferrend to have cursor on the next line. Setting this to `clean` instead of `yes` suppresses the caret on the new line.
+- `btf_left_prompts` - Define the prompt segments that will appear in the left prompt.
+- `btf_right_prompts` - Define the prompt segments that will appear in the right prompt.
+- `btf_right_colorized` - Set to `yes` to enable colorized segments of the right prompt.
+- `btf_newline_prompt` - Use a custom prompt with newline cursor. By default this is the chevron right glyph or `>` when powerline fonts are disabled.
+- `btf_date_format` - Use a custom format when printing dates.
+- `fish_prompt_pwd_dir_length` - bobthefish respects the Fish `$fish_prompt_pwd_dir_length` setting to abbreviate the prompt path. Set to `0` to show the full path, `1` (default) to show only the first character of each parent directory name, or any other number to show up to that many characters.
 
 **Color scheme options**
 
@@ -126,15 +114,15 @@ any color scheme.
 Set `btf_color_scheme` in a terminal session or in your fish startup files to
 one of the following options to change the prompt colors.
 
-- `dark`. The default bobthefish theme.
-- `light`. A lighter version of the default theme.
-- `solarized` (or `solarized-dark`), `solarized-light`. Dark and light variants
+- `dark` - The default bobthefish theme.
+- `light` - A lighter version of the default theme.
+- `solarized` (or `solarized-dark`), `solarized-light` - Dark and light variants
   of Solarized.
-- `base16` (or `base16-dark`), `base16-light`. Dark and light variants of the
+- `base16` (or `base16-dark`), `base16-light` - Dark and light variants of the
   default Base16 theme.
-- `zenburn`. An adaptation of Zenburn.
-- `gruvbox`. An adaptation of gruvbox.
-- `dracula`. An adaptation of dracula.
+- `zenburn` - An adaptation of Zenburn.
+- `gruvbox` - An adaptation of gruvbox.
+- `dracula` - An adaptation of dracula.
 
 Some of these may not look right if your terminal does not support 24 bit color,
 in which case you can try one of the `terminal` schemes (below). However, if
@@ -146,10 +134,10 @@ into your terminal. The advantage of using the schemes that fall through to the
 terminal colors is that they automatically adapt to something acceptable
 whenever you change the 16 colors in your terminal profile.
 - `terminal` (or `terminal-dark` or `terminal-dark-black`)
-- `terminal-dark-white`. Same as `terminal`, but use white as the foreground
+- `terminal-dark-white` - Same as `terminal`, but use white as the foreground
   color on top of colored segments (in case your colors are very dark).
 - `terminal-light` (or `terminal-light-white`)
-- `terminal-light-black`. Same as `terminal-light`, but use black as the
+- `terminal-light-black` - Same as `terminal-light`, but use black as the
   foreground color on top of colored segments (in case your colors are very
   bright).
 
@@ -169,8 +157,56 @@ variables to set the colors of the prompt. See the "Colors" section of
 `fish_prompt.fish` for details.
 
 
-**VCS options**
-- `set -g btf_prompt_vcs_ignore_paths /some/path /some/other/path{foo,bar}`. Ignore project paths for Git or Mercurial. Supports glob patterns.
+### Prompts
+
+**VCS (VCS/Git/Hg)**
+- `btf_prompt_vcs_ignore_paths /some/path /some/other/path{foo,bar}` - Ignore project paths for Git or Mercurial. Supports glob patterns.
+- `btf_prompt_vcs_project_dir_length` - The same as `$fish_prompt_pwd_dir_length`, but for the path relative to the current project root. Defaults to `0`; set to any other number to show an abbreviated path.
+- `btf_prompt_git_worktree_support` - If you do any git worktree shenanigans, setting this to `yes` will fix incorrect project-relative path display. If you don't do any git worktree shenanigans, leave it disabled. It's faster this way :)
+- `btf_prompt_git_dirty` (default `yes`) - 
+- `btf_prompt_git_untracked` (default `yes`) - 
+- `btf_prompt_git_ahead_verbose` (default `no`) - 
+- `btf_prompt_git_dirty_verbose` (default `no`) - 
+- `btf_prompt_git_master_branch` (default `no`) - 
+- `btf_prompt_git_worktree_support` (default `no`) - 
+
+
+**status**
+
+- `btf_prompt_status_show_exit_status` - Set this option to `yes` to have the prompt show the last exit code if it was non_zero instead of just the exclamation mark.
+
+
+**ruby**
+
+Displays information about the current Ruby version
+
+
+**vagrant** *(disabled by default)*
+
+Display information about the Vagrant status of the current project.  
+Please note that only the VirtualBox and VMWare providers are supported.
+
+
+**vi**
+
+Display a vi mode indicator if vi or hybrid key bindings are enabled.
+- `btf_prompt_vi_always` - Set to `yes` to always show this segment.
+
+
+**k8s_context** *(disabled by default)*
+
+Shows the current kubernetes context (`> kubectl config current-context`).
+
+
+**user**
+
+If set to `yes`, display username always, if set to `ssh`, only when an SSH-Session is detected, if set to `no`, never.
+
+
+**hostname**
+
+Same behaviour as `theme_display`.
+
 
 ### Overrides
 
