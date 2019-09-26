@@ -16,7 +16,7 @@
 #     https://github.com/ryanoasis/nerd-fonts
 
 function __bobthefish_draw_prompt -S
-  if [ "$btf_left_prompts[-1]" = 'newline' ]
+  if [ "$btf_left_prompts[-1]" = 'newline' ] || [ $line_segments_count = 0 ]
     set_color $fish_color_autosuggestion
     if [ "$btf_newline_prompt" != '' ]
       set prompt "$btf_newline_prompt"
@@ -33,6 +33,7 @@ end
 
 function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
   # Save the last status for later (do this before the `set` calls below)
+  set -g line_segments_count 0
   set -g last_status $status
   set -q btf_left_prompts; or set -l btf_left_prompts status vi vagrant docker k8s_context vaulted context desk rubies virtualfish virtualgo vcs newline
   set -l prompt_side 'left'

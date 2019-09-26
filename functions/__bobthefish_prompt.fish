@@ -243,6 +243,8 @@ function __bobthefish_start_segment -S -d 'Start a prompt segment'
   set -l fg $argv[1]
   set -e argv[1]
 
+  set line_segments_count (math $line_segments_count + 1)
+
   set_default bg black
   set_default fg white
 
@@ -955,8 +957,9 @@ end
 
 function __bobthefish_prompt_newline -S
   # Ignore newlines on the right side
-  if [ $prompt_side = 'left' ]
+  if [ $prompt_side = 'left' ] && [ $line_segments_count -gt 0 ]
     __bobthefish_finish_segments
+    set line_segments_count 0
     echo -ens "\n" $btf_prompt_newline_prefix
     set -g __bobthefish_newlines (math -- $__bobthefish_newlines + 1)
   end
