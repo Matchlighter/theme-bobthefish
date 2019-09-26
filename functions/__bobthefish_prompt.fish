@@ -232,6 +232,41 @@ function __bobthefish_git_dirty_verbose -S -d 'Print a more verbose dirty state 
   echo "$changes " | string replace -r '(\+0/(-0)?|/-0)' ''
 end
 
+function __bobthefish_date_seconds -S -a format -a dt
+  switch (uname -s)
+  case FreeBSD Darwin DragonFly
+    date -jf "$format" "$dt" +%s
+  case '*'
+    date "$dt" +%s
+  end
+end
+
+function __bobthefish_convert_times -S -a n from to
+  set -l seconds
+
+  switch $from
+  case 'ms'
+    set seconds (math $n '/' 1000)
+  case 's'
+    set seconds $n
+  case 'm'
+    set seconds (math $n '*' 60)
+  case 'h'
+    set seconds (math $n '*' 3600)
+  end
+
+  switch $to
+  case 'ms'
+    math $seconds '*' 1000
+  case 's'
+    echo $seconds
+  case 'm'
+    math $seconds '/' 60
+  case 'h'
+    math $seconds '/' 3600
+  end
+end
+
 
 # ==============================
 # Segment functions
@@ -566,6 +601,21 @@ end
 function __bobthefish_prompt_vaulted -S -d 'Display current Vaulted Environment'
   [ -z "$VAULTED_ENV" ]; and return
   __bobthefish_prompt_segment 'vaulted' (echo -ns "$VAULTED_ENV" ' ')
+
+  set -l VAULT_TIME (math (__bobthefish_date_seconds '%Y-%m-%dT%H:%M:%SZ' "$VAULTED_ENV_EXPIRATION") - (date +%s))
+
+  if [ "$VAULT_TIME" -lt 0 ]
+    set_color $fish_color_error
+    echo -ns 'EXP'
+  else if [ "$VAULT_TIME" -lt 60 ]
+    set_color $fish_color_error
+    echo -n (math "floor("(__bobthefish_convert_times $VAULT_TIME s s)")")s
+  else if [ "$VAULT_TIME" -lt 3600 ]
+    echo -n (math "floor("(__bobthefish_convert_times $VAULT_TIME s m)")")m
+  else
+    echo -n (math "floor("(__bobthefish_convert_times $VAULT_TIME s h)")")h
+  end
+  echo -ns ' '
 end
 
 
