@@ -235,9 +235,9 @@ end
 function __bobthefish_date_seconds -S -a format -a dt
   switch (uname -s)
   case FreeBSD Darwin DragonFly
-    date -jf "$format" "$dt" +%s
+    date -juf "$format" "$dt" +%s
   case '*'
-    date "$dt" +%s
+    date -u "$dt" +%s
   end
 end
 
@@ -423,7 +423,9 @@ end
 function __bobthefish_prompt_vi -S -d 'Display vi mode'
   [ "$fish_key_bindings" = 'fish_vi_key_bindings' \
     -o "$fish_key_bindings" = 'hybrid_bindings' \
-    -o "$fish_key_bindings" = 'fish_hybrid_key_bindings' ]; or return
+    -o "$fish_key_bindings" = 'fish_hybrid_key_bindings' \
+    -o "$btf_prompt_vi_always" = 'yes' \
+  ]; or return
   switch $fish_bind_mode
     case default
       __bobthefish_start_segment $color_vi_mode_default
@@ -602,7 +604,7 @@ function __bobthefish_prompt_vaulted -S -d 'Display current Vaulted Environment'
   [ -z "$VAULTED_ENV" ]; and return
   __bobthefish_prompt_segment 'vaulted' (echo -ns "$VAULTED_ENV" ' ')
 
-  set -l VAULT_TIME (math (__bobthefish_date_seconds '%Y-%m-%dT%H:%M:%SZ' "$VAULTED_ENV_EXPIRATION") - (date +%s))
+  set -l VAULT_TIME (math (__bobthefish_date_seconds '%Y-%m-%dT%H:%M:%SZ' "$VAULTED_ENV_EXPIRATION") - (date -u +%s))
 
   if [ "$VAULT_TIME" -lt 0 ]
     set_color $fish_color_error
